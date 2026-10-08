@@ -54,3 +54,7 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Key decisions
+
+I felt like my absolute key decision was how the offers opened - a new screen, a popup, a modal? In my experience having a separate screens makes deep-linking easier and that was one of the stretch goals so feels like a good route to go down... Popup or modal is probably easier, there's likely already existing components floating around that will do that all for me.
