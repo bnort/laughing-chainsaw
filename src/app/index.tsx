@@ -1,44 +1,33 @@
-import * as Device from "expo-device";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AnimatedIcon } from "@/components/animated-icon";
-import { HintRow } from "@/components/hint-row";
+import { OfferRow } from "@/components/offer-row";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { WebBadge } from "@/components/web-badge";
 import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+import { useCurrentOffers } from "@/hooks/use-current-offers";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-function getDevMenuHint() {
-  if (Platform.OS === "web") {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === "android" ? "cmd+m (or ctrl+m)" : "cmd+d";
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
 export default function ProfileScreen() {
-  const { data: user, isPending, isError } = useCurrentUser();
+  const {
+    data: user,
+    isPending: isUserPending,
+    isError: isUserError,
+  } = useCurrentUser();
+  const {
+    data: offers,
+    isPending: isOffersPending,
+    isError: isOffersError,
+  } = useCurrentOffers();
 
-  if (isPending) {
+  if (isUserPending) {
     return (
       <ThemedText type="title" style={styles.title}>
         Loading...
       </ThemedText>
     );
-  } else if (isError) {
+  } else if (isUserError) {
     return (
       <ThemedText type="title" style={styles.title}>
         Error. Sad.
@@ -53,25 +42,13 @@ export default function ProfileScreen() {
           <ThemedText type="title" style={styles.title}>
             Welcome back, {user.name}!
           </ThemedText>
+          <ThemedText type="subtitle" style={styles.title}>
+            Your offers:
+          </ThemedText>
+          {offers?.map((offer) => (
+            <OfferRow key={offer.id} offer={offer} />
+          ))}
         </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === "web" && <WebBadge />}
       </SafeAreaView>
     </ThemedView>
   );
