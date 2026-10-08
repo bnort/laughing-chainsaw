@@ -2,32 +2,22 @@ import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AnimatedIcon } from "@/components/animated-icon";
-import { OfferRow } from "@/components/offer-row";
+import { OfferList } from "@/components/offer-list";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
-import { useCurrentOffers } from "@/hooks/use-current-offers";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
 export default function ProfileScreen() {
-  const {
-    data: user,
-    isPending: isUserPending,
-    isError: isUserError,
-  } = useCurrentUser();
-  const {
-    data: offers,
-    isPending: isOffersPending,
-    isError: isOffersError,
-  } = useCurrentOffers();
+  const { data: user, isPending, isError } = useCurrentUser();
 
-  if (isUserPending) {
+  if (isPending) {
     return (
       <ThemedText type="title" style={styles.title}>
         Loading...
       </ThemedText>
     );
-  } else if (isUserError) {
+  } else if (isError) {
     return (
       <ThemedText type="title" style={styles.title}>
         Error. Sad.
@@ -45,9 +35,10 @@ export default function ProfileScreen() {
           <ThemedText type="subtitle" style={styles.title}>
             Your offers:
           </ThemedText>
-          {offers?.map((offer) => (
-            <OfferRow key={offer.id} offer={offer} />
-          ))}
+          <OfferList
+            points={user.balance}
+            lifetimePoints={user.lifetimePoints}
+          />
         </ThemedView>
       </SafeAreaView>
     </ThemedView>

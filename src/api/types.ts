@@ -1,11 +1,11 @@
+import { UserTier } from "@/constants/tiers";
+
 export type User = {
   id: number;
   name: string;
   balance: number;
-  tier: UserTier;
+  lifetimePoints: number;
 };
-
-export type UserTier = "bronze" | "silver" | "gold" | "platinum";
 
 export type Offer = {
   id: number;

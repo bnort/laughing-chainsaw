@@ -10,11 +10,11 @@ type OfferRowProps = {
   offer: Offer;
 };
 
-export function OfferRow(offer: OfferRowProps) {
+export function OfferRow(props: OfferRowProps) {
   return (
     <View style={styles.stepRow}>
       <ThemedView type="backgroundSelected" style={styles.codeSnippet}>
-        <ThemedText type="small">{offer.offer.type}</ThemedText>
+        <ThemedText type="small">{props.offer.type}</ThemedText>
       </ThemedView>
     </View>
   );
