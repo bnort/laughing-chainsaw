@@ -16,6 +16,7 @@ export default function RootLayout() {
         <AnimatedSplashOverlay />
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="offer/[id]" options={{ headerShown: false }} />
         </Stack>
       </QueryClientProvider>
     </ThemeProvider>
