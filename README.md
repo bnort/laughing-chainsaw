@@ -62,3 +62,7 @@ QR Code instead of barcode: I couldn't find one that was both recently maintaine
 Shape of loyalty program: Could have done some like earn points, spend points thing... Decided to go with tiers where you're only eligible for certain offers if you're in a specific tier with lifetime points being how you move up the tiers. This allowed for some selection stuff, but all done with a single list. The theory then is that each offer costs you some of your balance or active points when you redeem them.
 
 I didn't really use the tabs navigation, but felt like leaving them in was a smart idea. Many apps would go from this current basic view to adding something like a 'my profile' or 'settings' page, so instead of re-building it from scratch I left it with its very basic functinoality.
+
+## AI Use
+
+I used AI for bootstrapping and syntax primarily.
