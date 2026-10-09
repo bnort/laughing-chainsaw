@@ -1,7 +1,7 @@
 import { Offer } from "@/api/types";
 import { Spacing } from "@/constants/theme";
 import { useCurrentOffers } from "@/hooks/use-current-offers";
-import { groupOffersByTier, OfferSection } from "@/logic/user-tier";
+import { formatTier, groupOffersByTier, OfferSection } from "@/logic/user-tier";
 import {
   SectionList,
   SectionListRenderItem,
@@ -27,11 +27,23 @@ export type OfferListProps = {
 
 function getSectionHeader(section: OfferSection) {
   if (!section.locked) {
-    return <ThemedText type="subtitle">Your offers</ThemedText>;
+    return (
+      <ThemedText
+        type="smallBold"
+        themeColor="textSecondary"
+        style={styles.headerText}
+      >
+        Your offers
+      </ThemedText>
+    );
   } else {
     return (
-      <ThemedText type="subtitle">
-        Unlock at {section.tier.toUpperCase()}
+      <ThemedText
+        type="smallBold"
+        themeColor="textSecondary"
+        style={styles.headerText}
+      >
+        Unlock at {formatTier(section.tier)}
       </ThemedText>
     );
   }
@@ -76,6 +88,7 @@ export function OfferList(props: OfferListProps) {
       ListHeaderComponent={props.header}
       contentContainerStyle={styles.content}
       ItemSeparatorComponent={Separator}
+      stickySectionHeadersEnabled={false}
     />
   );
 }
@@ -86,5 +99,10 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: Spacing.two,
+  },
+  headerText: {
+    textTransform: "uppercase",
+    letterSpacing: 1.5,
+    paddingVertical: Spacing.one,
   },
 });

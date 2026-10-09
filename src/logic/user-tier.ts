@@ -10,6 +10,10 @@ export function getTier(lifetimePoints: number): UserTier {
   return "bronze";
 }
 
+export function formatTier(tier: UserTier): string {
+  return tier[0].toUpperCase() + tier.slice(1);
+}
+
 function getNextTier(tier: UserTier): UserTier | undefined {
   return TIERS[TIERS.indexOf(tier) + 1];
 }

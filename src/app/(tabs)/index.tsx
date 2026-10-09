@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { User } from "@/api/types";
@@ -11,12 +11,13 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 
 function HomeHeader({ user }: { user: User }) {
   return (
-    <ThemedView>
-      <ThemedText type="title" style={styles.title}>
-        Welcome back, {user.name}!
+    <View style={styles.wrapper}>
+      <ThemedText type="small" themeColor="textSecondary">
+        Welcome back,
       </ThemedText>
+      <ThemedText type="title">{user.name}!</ThemedText>
       <PointsCard balance={user.balance} lifetimePoints={user.lifetimePoints} />
-    </ThemedView>
+    </View>
   );
 }
 
@@ -25,13 +26,13 @@ export default function ProfileScreen() {
 
   if (isPending) {
     return (
-      <ThemedText type="title" style={styles.title}>
+      <ThemedText type="title" style={styles.text}>
         Loading...
       </ThemedText>
     );
   } else if (isError) {
     return (
-      <ThemedText type="title" style={styles.title}>
+      <ThemedText type="title" style={styles.text}>
         Error. Sad.
       </ThemedText>
     );
@@ -60,7 +61,11 @@ const styles = StyleSheet.create({
     paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
   },
-  title: {
-    textAlign: "center",
+  wrapper: {
+    gap: Spacing.four,
+    paddingTop: Spacing.four,
+  },
+  text: {
+    flex: 1,
   },
 });

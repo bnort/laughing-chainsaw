@@ -1,6 +1,6 @@
 import { Spacing } from "@/constants/theme";
-import { getTierProgress } from "@/logic/user-tier";
-import { StyleSheet } from "react-native";
+import { formatTier, getTierProgress } from "@/logic/user-tier";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
@@ -15,14 +15,21 @@ export function PointsCard({
     getTierProgress(lifetimePoints);
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold" themeColor="accentText">
-        TIER: {tier.toUpperCase()}
+      <ThemedText
+        type="smallBold"
+        themeColor="accentText"
+        style={styles.tierText}
+      >
+        TIER: {formatTier(tier)}
       </ThemedText>
-      <ThemedText type="subtitle">
-        Points: {balance.toLocaleString()}
-      </ThemedText>
+      <View style={styles.pointsText}>
+        <ThemedText type="title">{balance.toLocaleString()}</ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          points
+        </ThemedText>
+      </View>
       {nextTier ? (
-        <ThemedView type="backgroundElement">
+        <View style={styles.progressBarWrapper}>
           <ThemedView
             style={styles.progressBarOuter}
             type={"backgroundSelected"}
@@ -32,11 +39,11 @@ export function PointsCard({
               type="accent"
             />
           </ThemedView>
-          <ThemedText type="small">
+          <ThemedText type="small" themeColor="textSecondary">
             {pointsToNext.toLocaleString()} more lifetime points needed to get
-            to {nextTier.toUpperCase()}
+            to {formatTier(nextTier)}
           </ThemedText>
-        </ThemedView>
+        </View>
       ) : (
         <ThemedText type="small">Top tier reached.</ThemedText>
       )}
@@ -53,9 +60,21 @@ const styles = StyleSheet.create({
   progressBarInner: {
     height: "100%",
   },
+  progressBarWrapper: {
+    gap: Spacing.two,
+  },
   card: {
-    padding: Spacing.two,
-    borderRadius: 4,
+    padding: Spacing.three,
+    borderRadius: Spacing.one,
+    gap: Spacing.two,
+  },
+  tierText: {
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  pointsText: {
+    flexDirection: "row",
+    alignItems: "baseline",
     gap: Spacing.two,
   },
 });
