@@ -26,14 +26,14 @@ export default function ProfileScreen() {
 
   if (isPending) {
     return (
-      <ThemedText type="title" style={styles.text}>
+      <ThemedText type="small" style={styles.emptyState}>
         Loading...
       </ThemedText>
     );
   } else if (isError) {
     return (
-      <ThemedText type="title" style={styles.text}>
-        Error. Sad.
+      <ThemedText type="small" style={styles.emptyState}>
+        Error...
       </ThemedText>
     );
   }
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     gap: Spacing.four,
     paddingTop: Spacing.four,
   },
-  text: {
-    flex: 1,
+  emptyState: {
+    padding: Spacing.four,
   },
 });
