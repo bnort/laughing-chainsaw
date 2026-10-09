@@ -1,12 +1,24 @@
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AnimatedIcon } from "@/components/animated-icon";
+import { User } from "@/api/types";
 import { OfferList } from "@/components/offer-list";
+import { PointsCard } from "@/components/points-card";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
 import { useCurrentUser } from "@/hooks/use-current-user";
+
+function HomeHeader({ user }: { user: User }) {
+  return (
+    <ThemedView>
+      <ThemedText type="title" style={styles.title}>
+        Welcome back, {user.name}!
+      </ThemedText>
+      <PointsCard balance={user.balance} lifetimePoints={user.lifetimePoints} />
+    </ThemedView>
+  );
+}
 
 export default function ProfileScreen() {
   const { data: user, isPending, isError } = useCurrentUser();
@@ -27,19 +39,11 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome back, {user.name}!
-          </ThemedText>
-          <ThemedText type="subtitle" style={styles.title}>
-            Your offers:
-          </ThemedText>
-          <OfferList
-            points={user.balance}
-            lifetimePoints={user.lifetimePoints}
-          />
-        </ThemedView>
+        <OfferList
+          points={user.balance}
+          lifetimePoints={user.lifetimePoints}
+          header={<HomeHeader user={user} />}
+        />
       </SafeAreaView>
     </ThemedView>
   );
@@ -53,30 +57,10 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: "center",
-    gap: Spacing.three,
     paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
   title: {
     textAlign: "center",
-  },
-  code: {
-    textTransform: "uppercase",
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: "stretch",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
   },
 });

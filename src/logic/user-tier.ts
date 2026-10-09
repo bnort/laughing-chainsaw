@@ -10,11 +10,43 @@ export function getTier(lifetimePoints: number): UserTier {
   return "bronze";
 }
 
+function getNextTier(tier: UserTier): UserTier | undefined {
+  return TIERS[TIERS.indexOf(tier) + 1];
+}
+
 export function pointsToTier(
   lifetimePoints: number,
   targetTier: UserTier,
 ): number {
   return Math.max(0, TIER_THRESHOLDS[targetTier] - lifetimePoints);
+}
+
+export type TierProgress = {
+  tier: UserTier;
+  nextTier: UserTier | undefined;
+  progress: number;
+  pointsToNext: number;
+};
+
+export function getTierProgress(lifetimePoints: number): TierProgress {
+  const currentTier = getTier(lifetimePoints);
+  const nextTier = getNextTier(currentTier);
+  let progress = 0;
+  let pointsToNext = 0;
+
+  if (nextTier) {
+    progress =
+      (lifetimePoints - TIER_THRESHOLDS[currentTier]) /
+      (TIER_THRESHOLDS[nextTier] - TIER_THRESHOLDS[currentTier]);
+    pointsToNext = pointsToTier(lifetimePoints, nextTier);
+  }
+
+  return {
+    tier: currentTier,
+    nextTier,
+    progress,
+    pointsToNext,
+  };
 }
 
 export type OfferSection = { title: string; data: Offer[] };

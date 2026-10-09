@@ -57,4 +57,8 @@ Join our community of developers creating universal apps.
 
 ## Key decisions
 
-I felt like my absolute key decision was how the offers opened - a new screen, a popup, a modal? In my experience having a separate screens makes deep-linking easier and that was one of the stretch goals so feels like a good route to go down... Popup or modal is probably easier, there's likely already existing components floating around that will do that all for me.
+QR Code instead of barcode: I couldn't find one that was both recently maintained and did not need a development build so I instead went with a QR Code generator. In an actual build I would look to find a solution that worked better to actually meet the brief. Either by using different libraries for native/web, or bringing a library in-house and adapting it to work for our use-case, or discussion with stakeholders about whether the brief could be changed. However with this small-scale project I went with the easier option of using QR codes instead of a barcode.
+
+Shape of loyalty program: Could have done some like earn points, spend points thing... Decided to go with tiers where you're only eligible for certain offers if you're in a specific tier with lifetime points being how you move up the tiers. This allowed for some selection stuff, but all done with a single list. The theory then is that each offer costs you some of your balance or active points when you redeem them.
+
+I didn't really use the tabs navigation, but felt like leaving them in was a smart idea. Many apps would go from this current basic view to adding something like a 'my profile' or 'settings' page, so instead of re-building it from scratch I left it with its very basic functinoality.

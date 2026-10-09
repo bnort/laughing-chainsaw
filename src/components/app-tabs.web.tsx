@@ -6,10 +6,8 @@ import {
   TabTrigger,
   TabTriggerSlotProps,
 } from "expo-router/ui";
-import { SymbolView } from "expo-symbols";
-import { Pressable, StyleSheet, useColorScheme, View } from "react-native";
+import { Pressable, StyleSheet, useColorScheme } from "react-native";
 
-import { ExternalLink } from "./external-link";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
@@ -18,17 +16,14 @@ import { Colors, MaxContentWidth, Spacing } from "@/constants/theme";
 export default function AppTabs() {
   return (
     <Tabs>
-      <TabSlot style={{ height: "100%" }} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="index" href="/" asChild>
-            <TabButton>Profile</TabButton>
-          </TabTrigger>
-          <TabTrigger name="explore" href="/explore" asChild>
-            <TabButton>Explore</TabButton>
+            <TabButton>Home</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
+      <TabSlot style={{ flex: 1 }} />
     </Tabs>
   );
 }
@@ -60,32 +55,20 @@ export function CustomTabList(props: TabListProps) {
   const colors = Colors[scheme === "unspecified" ? "light" : scheme];
 
   return (
-    <View {...props} style={styles.tabListContainer}>
+    <ThemedView type="background" {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
         <ThemedText type="smallBold" style={styles.brandText}>
-          Expo Starter
+          Veist
         </ThemedText>
 
         {props.children}
-
-        <ExternalLink href="https://docs.expo.dev" asChild>
-          <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
-            <SymbolView
-              tintColor={colors.text}
-              name={{ ios: "arrow.up.right.square", web: "link" }}
-              size={12}
-            />
-          </Pressable>
-        </ExternalLink>
       </ThemedView>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   tabListContainer: {
-    position: "absolute",
     width: "100%",
     padding: Spacing.three,
     justifyContent: "center",
