@@ -1,14 +1,22 @@
 import { Offer } from "@/api/types";
 import { Spacing } from "@/constants/theme";
 import { useCurrentOffers } from "@/hooks/use-current-offers";
-import { groupOffersByTier } from "@/logic/user-tier";
-import { ListRenderItem, SectionList, StyleSheet } from "react-native";
+import { groupOffersByTier, OfferSection } from "@/logic/user-tier";
+import {
+  SectionList,
+  SectionListRenderItem,
+  StyleSheet,
+  View,
+} from "react-native";
 import { OfferRow } from "./offer-row";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
-const renderOfferRow: ListRenderItem<Offer> = ({ item }) => {
-  return <OfferRow offer={item} />;
+const renderOfferRow: SectionListRenderItem<Offer, OfferSection> = ({
+  item,
+  section,
+}) => {
+  return <OfferRow offer={item} locked={section.locked} />;
 };
 
 export type OfferListProps = {
@@ -16,6 +24,22 @@ export type OfferListProps = {
   points: number;
   header?: React.ReactElement;
 };
+
+function getSectionHeader(section: OfferSection) {
+  if (!section.locked) {
+    return <ThemedText type="subtitle">Your offers</ThemedText>;
+  } else {
+    return (
+      <ThemedText type="subtitle">
+        Unlock at {section.tier.toUpperCase()}
+      </ThemedText>
+    );
+  }
+}
+
+function Separator() {
+  return <View style={styles.separator} />;
+}
 
 export function OfferList(props: OfferListProps) {
   const { data: offers, isPending, isError } = useCurrentOffers();
@@ -37,16 +61,21 @@ export function OfferList(props: OfferListProps) {
   }
 
   const sections = groupOffersByTier(offers, props.lifetimePoints);
+
   return (
     <SectionList
       sections={sections}
       renderItem={renderOfferRow}
-      renderSectionHeader={({ section }) => (
-        <ThemedText type="subtitle">{section.title}</ThemedText>
-      )}
+      renderSectionHeader={({ section }) => getSectionHeader(section)}
       keyExtractor={(offer) => String(offer.id)}
+      renderSectionFooter={({ section }) =>
+        !section.locked && section.data.length === 0 ? (
+          <ThemedText type="small">No offers yet, stay tuned.</ThemedText>
+        ) : null
+      }
       ListHeaderComponent={props.header}
       contentContainerStyle={styles.content}
+      ItemSeparatorComponent={Separator}
     />
   );
 }
@@ -54,5 +83,8 @@ export function OfferList(props: OfferListProps) {
 const styles = StyleSheet.create({
   content: {
     paddingHorizontal: Spacing.four,
+  },
+  separator: {
+    height: Spacing.two,
   },
 });

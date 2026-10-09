@@ -1,33 +1,49 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
 
 import { Offer } from "@/api/types";
 import { Spacing } from "@/constants/theme";
+import { Link } from "expo-router";
 
 type OfferRowProps = {
   offer: Offer;
+  locked: boolean;
 };
 
 export function OfferRow(props: OfferRowProps) {
+  const { offer, locked } = props;
   return (
-    <View style={styles.stepRow}>
-      <ThemedView type="backgroundSelected" style={styles.codeSnippet}>
-        <ThemedText type="small">{props.offer.type}</ThemedText>
-      </ThemedView>
-    </View>
+    <Link href={{ pathname: "/offer/[id]", params: { id: offer.id } }} asChild>
+      <Pressable style={({ pressed }) => pressed && styles.pressed}>
+        <ThemedView
+          type="backgroundElement"
+          style={[locked && styles.locked, styles.card]}
+        >
+          <ThemedText type="small" style={styles.title}>
+            {offer.type}
+          </ThemedText>
+          <ThemedText type="small">{locked ? "🔒" : ">"}</ThemedText>
+        </ThemedView>
+      </Pressable>
+    </Link>
   );
 }
 
 const styles = StyleSheet.create({
-  stepRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  title: {
+    flex: 1,
   },
-  codeSnippet: {
-    borderRadius: Spacing.two,
-    paddingVertical: Spacing.half,
-    paddingHorizontal: Spacing.two,
+  card: {
+    padding: Spacing.three,
+    borderRadius: Spacing.one,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: Spacing.three,
+  },
+  pressed: { opacity: 0.7 },
+  locked: {
+    opacity: 0.5,
   },
 });

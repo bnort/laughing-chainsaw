@@ -49,13 +49,15 @@ export function getTierProgress(lifetimePoints: number): TierProgress {
   };
 }
 
-export type OfferSection = { title: string; data: Offer[] };
+export type OfferSection = { tier: UserTier; locked: boolean; data: Offer[] };
 export function groupOffersByTier(offers: Offer[], lifetimePoints: number) {
-  const userRank = TIERS.indexOf(getTier(lifetimePoints));
+  const userTier = getTier(lifetimePoints);
+  const userRank = TIERS.indexOf(userTier);
 
   const sections: OfferSection[] = [
     {
-      title: "Your offers",
+      locked: false,
+      tier: userTier,
       data: offers.filter(
         (offer) => TIERS.indexOf(offer.tierEligible) <= userRank,
       ),
@@ -67,7 +69,8 @@ export function groupOffersByTier(offers: Offer[], lifetimePoints: number) {
     if (tierOffers.length === 0) continue;
 
     sections.push({
-      title: `Earn ${pointsToTier(lifetimePoints, tier)} more points to unlock ${tier}, giving you these offers:`,
+      locked: true,
+      tier,
       data: tierOffers,
     });
   }
