@@ -3,9 +3,12 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
+import { Offer, User } from "@/api/types";
 import { MaxContentWidth, Spacing } from "@/constants/theme";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useOffer } from "@/hooks/use-offer";
 import { getRedemptionCode } from "@/logic/redemption-code";
+import { isEligible, pointsToTier } from "@/logic/user-tier";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import QRCode from "react-native-qrcode-svg";
@@ -48,18 +51,38 @@ function RedemptionCode({ code }: { code: string }) {
   );
 }
 
+function RedeemSection({ offer, user }: { offer: Offer; user: User }) {
+  const [code, setCode] = useState<string | null>(null);
+  if (!isEligible(user.lifetimePoints, offer)) {
+    return (
+      <ThemedText>
+        You are not quite eligible for this offer, our apologies. Earn{" "}
+        {pointsToTier(user.lifetimePoints, offer.tierEligible).toLocaleString()}{" "}
+        more points to get this offer.
+      </ThemedText>
+    );
+  } else if (code) {
+    return <RedemptionCode code={code} />;
+  }
+  return <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />;
+}
+
 export default function OfferScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: offer, isPending, isError } = useOffer(Number(id));
-  const [code, setCode] = useState<string | null>(null);
+  const {
+    data: user,
+    isPending: userPending,
+    isError: userError,
+  } = useCurrentUser();
 
-  if (isPending) {
+  if (isPending || userPending) {
     return (
       <ScreenContainer>
         <ThemedText type="small">Loading...</ThemedText>
       </ScreenContainer>
     );
-  } else if (isError) {
+  } else if (isError || userError) {
     return (
       <ScreenContainer>
         <ThemedText type="small">Error</ThemedText>
@@ -80,11 +103,7 @@ export default function OfferScreen() {
       <ThemedText type="default" themeColor="textSecondary">
         {offer.text}
       </ThemedText>
-      {code ? (
-        <RedemptionCode code={code} />
-      ) : (
-        <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
-      )}
+      <RedeemSection offer={offer} user={user} />
     </ScreenContainer>
   );
 }

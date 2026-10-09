@@ -58,9 +58,7 @@ export function groupOffersByTier(offers: Offer[], lifetimePoints: number) {
     {
       locked: false,
       tier: userTier,
-      data: offers.filter(
-        (offer) => TIERS.indexOf(offer.tierEligible) <= userRank,
-      ),
+      data: offers.filter((offer) => isEligible(lifetimePoints, offer)),
     },
   ];
 
@@ -76,4 +74,10 @@ export function groupOffersByTier(offers: Offer[], lifetimePoints: number) {
   }
 
   return sections;
+}
+
+export function isEligible(lifetimePoints: number, offer: Offer): boolean {
+  return (
+    TIERS.indexOf(getTier(lifetimePoints)) >= TIERS.indexOf(offer.tierEligible)
+  );
 }

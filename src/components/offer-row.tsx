@@ -14,21 +14,25 @@ type OfferRowProps = {
 
 export function OfferRow(props: OfferRowProps) {
   const { offer, locked } = props;
+
+  const card = (
+    <ThemedView
+      type="backgroundElement"
+      style={[locked && styles.locked, styles.card]}
+    >
+      <ThemedText type="small" style={styles.title}>
+        {offer.type}
+      </ThemedText>
+      <ThemedText type="small">{locked ? "🔒" : ">"}</ThemedText>
+    </ThemedView>
+  );
+
+  if (locked) return card;
+
   return (
     <Link href={{ pathname: "/offer/[id]", params: { id: offer.id } }} asChild>
-      <Pressable
-        style={({ pressed }) => pressed && styles.pressed}
-        accessibilityRole="button"
-      >
-        <ThemedView
-          type="backgroundElement"
-          style={[locked && styles.locked, styles.card]}
-        >
-          <ThemedText type="small" style={styles.title}>
-            {offer.type}
-          </ThemedText>
-          <ThemedText type="small">{locked ? "🔒" : ">"}</ThemedText>
-        </ThemedView>
+      <Pressable style={({ pressed }) => pressed && styles.pressed}>
+        {card}
       </Pressable>
     </Link>
   );
