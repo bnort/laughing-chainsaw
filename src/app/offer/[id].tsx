@@ -4,6 +4,8 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
 import { Offer, User } from "@/api/types";
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
 import { MaxContentWidth, Spacing } from "@/constants/theme";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useOffer } from "@/hooks/use-offer";
@@ -69,29 +71,36 @@ function RedeemSection({ offer, user }: { offer: Offer; user: User }) {
 
 export default function OfferScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: offer, isPending, isError } = useOffer(Number(id));
+  const { data: offer, isPending, isError, refetch } = useOffer(Number(id));
   const {
     data: user,
     isPending: userPending,
     isError: userError,
+    refetch: userRefetch,
   } = useCurrentUser();
 
   if (isPending || userPending) {
     return (
       <ScreenContainer>
-        <ThemedText type="small">Loading...</ThemedText>
+        <LoadingState />
       </ScreenContainer>
     );
   } else if (isError || userError) {
     return (
       <ScreenContainer>
-        <ThemedText type="small">Error</ThemedText>
+        <ErrorState
+          message="Couldn't load this offer"
+          onRetry={() => {
+            if (isError) refetch();
+            if (userError) userRefetch();
+          }}
+        />
       </ScreenContainer>
     );
   } else if (!offer) {
     return (
       <ScreenContainer>
-        <ThemedText type="small">No Offer Found</ThemedText>
+        <ErrorState message="This offer doesn't exist" />
       </ScreenContainer>
     );
   }

@@ -2,6 +2,8 @@ import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { User } from "@/api/types";
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
 import { OfferList } from "@/components/offer-list";
 import { PointsCard } from "@/components/points-card";
 import { ThemedText } from "@/components/themed-text";
@@ -22,19 +24,16 @@ function HomeHeader({ user }: { user: User }) {
 }
 
 export default function ProfileScreen() {
-  const { data: user, isPending, isError } = useCurrentUser();
+  const { data: user, isPending, isError, refetch } = useCurrentUser();
 
   if (isPending) {
-    return (
-      <ThemedText type="small" style={styles.emptyState}>
-        Loading...
-      </ThemedText>
-    );
+    return <LoadingState />;
   } else if (isError) {
     return (
-      <ThemedText type="small" style={styles.emptyState}>
-        Error...
-      </ThemedText>
+      <ErrorState
+        message="Unable to load user profile"
+        onRetry={() => refetch()}
+      />
     );
   }
   return (

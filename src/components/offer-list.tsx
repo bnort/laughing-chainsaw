@@ -8,6 +8,8 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { ErrorState } from "./error-state";
+import { LoadingState } from "./loading-state";
 import { OfferRow } from "./offer-row";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
@@ -54,20 +56,20 @@ function Separator() {
 }
 
 export function OfferList(props: OfferListProps) {
-  const { data: offers, isPending, isError } = useCurrentOffers();
+  const { data: offers, isPending, isError, refetch } = useCurrentOffers();
 
   if (isPending) {
     return (
-      <ThemedView>
+      <ThemedView style={styles.content}>
         {props.header}
-        <ThemedText> Loading... </ThemedText>
+        <LoadingState />
       </ThemedView>
     );
   } else if (isError) {
     return (
-      <ThemedView>
+      <ThemedView style={styles.content}>
         {props.header}
-        <ThemedText> Error... </ThemedText>
+        <ErrorState message="Error loading offers" onRetry={() => refetch()} />
       </ThemedView>
     );
   }
