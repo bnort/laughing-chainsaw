@@ -20,6 +20,13 @@ const defaultOfferList: Offer[] = [
     tierEligible: "gold",
   },
 ];
+
+let fetchCount = 0;
+
 export async function fetchCurrentOffers(): Promise<Offer[]> {
+  fetchCount++;
+  if (fetchCount % 2 === 0) {
+    throw new Error("Mock failure: every second request fails");
+  }
   return defaultOfferList;
 }

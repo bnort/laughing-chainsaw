@@ -7,5 +7,6 @@ const defaultUser: User = {
   lifetimePoints: 800,
 };
 export async function fetchCurrentUser(): Promise<User> {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return defaultUser;
 }
