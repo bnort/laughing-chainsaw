@@ -1,11 +1,11 @@
-import { Button, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
 import { useOffer } from "@/hooks/use-offer";
 import { getRedemptionCode } from "@/logic/redemption-code";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import QRCode from "react-native-qrcode-svg";
 
@@ -36,16 +36,21 @@ export default function OfferScreen() {
   }
 
   return (
-    <View>
-      <ThemedView type="backgroundSelected">
-        <ThemedText type="small">{offer.type}</ThemedText>
-        <ThemedText type="small">{offer.text}</ThemedText>
-        {code ? (
-          <RedemptionCode code={code} />
-        ) : (
-          <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
-        )}
-      </ThemedView>
-    </View>
+    <ThemedView style={styles.content}>
+      <Stack.Screen options={{ title: offer.type }} />
+      <ThemedText type="small">{offer.type}</ThemedText>
+      <ThemedText type="small">{offer.text}</ThemedText>
+      {code ? (
+        <RedemptionCode code={code} />
+      ) : (
+        <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
+      )}
+    </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+  },
+});
