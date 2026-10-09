@@ -16,7 +16,10 @@ export function OfferRow(props: OfferRowProps) {
   const { offer, locked } = props;
   return (
     <Link href={{ pathname: "/offer/[id]", params: { id: offer.id } }} asChild>
-      <Pressable style={({ pressed }) => pressed && styles.pressed}>
+      <Pressable
+        style={({ pressed }) => pressed && styles.pressed}
+        accessibilityRole="button"
+      >
         <ThemedView
           type="backgroundElement"
           style={[locked && styles.locked, styles.card]}

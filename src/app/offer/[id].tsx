@@ -1,8 +1,9 @@
-import { Button, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 
+import { MaxContentWidth, Spacing } from "@/constants/theme";
 import { useOffer } from "@/hooks/use-offer";
 import { getRedemptionCode } from "@/logic/redemption-code";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -10,14 +11,27 @@ import { useState } from "react";
 import QRCode from "react-native-qrcode-svg";
 
 function RedeemButton({ onPress }: { onPress: () => void }) {
-  return <Button title="Redeem" onPress={onPress} />;
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => pressed && styles.pressed}
+      accessibilityRole="button"
+    >
+      <ThemedView type="accent" style={styles.button}>
+        <ThemedText themeColor="onAccent">Redeem</ThemedText>
+      </ThemedView>
+    </Pressable>
+  );
 }
 
 function RedemptionCode({ code }: { code: string }) {
   return (
-    <View>
+    <View style={styles.redemptionCode}>
+      <ThemedText type="small">Show this when you place your order</ThemedText>
       <QRCode value={code} size={200} quietZone={16} />
-      <ThemedText type="small">{code}</ThemedText>
+      <ThemedText type="code" style={styles.redemptionCodeText}>
+        {code}
+      </ThemedText>
     </View>
   );
 }
@@ -36,21 +50,47 @@ export default function OfferScreen() {
   }
 
   return (
-    <ThemedView style={styles.content}>
+    <ThemedView style={styles.wrapper}>
       <Stack.Screen options={{ title: offer.type }} />
-      <ThemedText type="small">{offer.type}</ThemedText>
-      <ThemedText type="small">{offer.text}</ThemedText>
-      {code ? (
-        <RedemptionCode code={code} />
-      ) : (
-        <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
-      )}
+      <View style={styles.content}>
+        <ThemedText type="subtitle">{offer.type}</ThemedText>
+        <ThemedText type="default" themeColor="textSecondary">
+          {offer.text}
+        </ThemedText>
+        {code ? (
+          <RedemptionCode code={code} />
+        ) : (
+          <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
+        )}
+      </View>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
+  wrapper: {
     flex: 1,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+  content: {
+    padding: Spacing.four,
+    gap: Spacing.three,
+    maxWidth: MaxContentWidth,
+    width: "100%",
+    alignSelf: "center",
+  },
+  button: {
+    alignItems: "center",
+    paddingVertical: Spacing.three,
+    borderRadius: Spacing.one,
+  },
+  redemptionCode: {
+    alignItems: "center",
+    gap: Spacing.two,
+  },
+  redemptionCodeText: {
+    letterSpacing: Spacing.one,
   },
 });
