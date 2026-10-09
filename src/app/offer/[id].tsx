@@ -10,6 +10,14 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import QRCode from "react-native-qrcode-svg";
 
+function ScreenContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemedView style={styles.wrapper}>
+      <View style={styles.content}>{children}</View>
+    </ThemedView>
+  );
+}
+
 function RedeemButton({ onPress }: { onPress: () => void }) {
   return (
     <Pressable
@@ -18,7 +26,9 @@ function RedeemButton({ onPress }: { onPress: () => void }) {
       accessibilityRole="button"
     >
       <ThemedView type="accent" style={styles.button}>
-        <ThemedText themeColor="onAccent">Redeem</ThemedText>
+        <ThemedText themeColor="onAccent" type="smallBold">
+          Redeem
+        </ThemedText>
       </ThemedView>
     </Pressable>
   );
@@ -27,7 +37,9 @@ function RedeemButton({ onPress }: { onPress: () => void }) {
 function RedemptionCode({ code }: { code: string }) {
   return (
     <View style={styles.redemptionCode}>
-      <ThemedText type="small">Show this when you place your order</ThemedText>
+      <ThemedText themeColor="textSecondary" type="small">
+        Show this when you place your order
+      </ThemedText>
       <QRCode value={code} size={200} quietZone={16} />
       <ThemedText type="code" style={styles.redemptionCodeText}>
         {code}
@@ -42,28 +54,38 @@ export default function OfferScreen() {
   const [code, setCode] = useState<string | null>(null);
 
   if (isPending) {
-    return <ThemedText type="small">Loading...</ThemedText>;
+    return (
+      <ScreenContainer>
+        <ThemedText type="small">Loading...</ThemedText>
+      </ScreenContainer>
+    );
   } else if (isError) {
-    return <ThemedText type="small">Error</ThemedText>;
+    return (
+      <ScreenContainer>
+        <ThemedText type="small">Error</ThemedText>
+      </ScreenContainer>
+    );
   } else if (!offer) {
-    return <ThemedText type="small">No Offer Found</ThemedText>;
+    return (
+      <ScreenContainer>
+        <ThemedText type="small">No Offer Found</ThemedText>
+      </ScreenContainer>
+    );
   }
 
   return (
-    <ThemedView style={styles.wrapper}>
+    <ScreenContainer>
       <Stack.Screen options={{ title: offer.type }} />
-      <View style={styles.content}>
-        <ThemedText type="subtitle">{offer.type}</ThemedText>
-        <ThemedText type="default" themeColor="textSecondary">
-          {offer.text}
-        </ThemedText>
-        {code ? (
-          <RedemptionCode code={code} />
-        ) : (
-          <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
-        )}
-      </View>
-    </ThemedView>
+      <ThemedText type="subtitle">{offer.type}</ThemedText>
+      <ThemedText type="default" themeColor="textSecondary">
+        {offer.text}
+      </ThemedText>
+      {code ? (
+        <RedemptionCode code={code} />
+      ) : (
+        <RedeemButton onPress={() => setCode(getRedemptionCode(offer.id))} />
+      )}
+    </ScreenContainer>
   );
 }
 
