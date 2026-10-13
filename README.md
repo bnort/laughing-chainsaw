@@ -94,7 +94,8 @@ I used AI for bootstrapping and syntax primarily. Secondarily using it as a revi
 The mock API is set up so you can see these states without changing any code:
 
 - **Loading:** the user request has a 1-second delay, so every cold load shows the spinner.
-- **Error:** every second offers request fails. Opening an offer triggers a refetch, so roughly every other offer you open shows the error state, and Retry recovers it. The counter resets when you reload the app.
+<!-- - **Error:** every second offers request fails. Opening an offer triggers a refetch, so roughly every other offer you open shows the error state, and Retry recovers it. The counter resets when you reload the app. -->
+- Due to an iOS issue where the retry button doesn't appear, the app now no longer throws errors on purpose.
 - On the web, switching browser tabs also triggers a refetch, which can shift the pattern by one.
 - To see the loading state for the offers section (under the header), move the delay from `src/api/user.ts` to `src/api/offers.ts`.
 

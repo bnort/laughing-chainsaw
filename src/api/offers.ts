@@ -21,12 +21,12 @@ const defaultOfferList: Offer[] = [
   },
 ];
 
-let fetchCount = 0;
+// let fetchCount = 0;
 
 export async function fetchCurrentOffers(): Promise<Offer[]> {
-  fetchCount++;
-  if (fetchCount % 2 === 0) {
-    throw new Error("Mock failure: every second request fails");
-  }
+  // fetchCount++;
+  // if (fetchCount % 2 === 0) {
+  //   throw new Error("Mock failure: every second request fails");
+  // }
   return defaultOfferList;
 }
